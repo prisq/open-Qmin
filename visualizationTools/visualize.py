@@ -181,8 +181,8 @@ if objpts.shape[0] > 0:
 	ax.scatter(objpts[:,0], objpts[:,1], objpts[:,2], c='yellow', alpha=0.5, zorder=-1, s=obj_size)
 
 ## to shift points through the periodic boundaries:
-# shiftvec = [0,0,0]
-shiftvec = [int((xmax-xmin)/4),int((ymax-ymin)/4),0]
+shiftvec = [0,0,0]
+# shiftvec = [int((xmax-xmin)/4),int((ymax-ymin)/4),0]
 
 ## to rescale one or more of the axes
 zstretch = 1

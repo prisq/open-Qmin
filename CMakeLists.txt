@@ -3,7 +3,7 @@ project(openQmin LANGUAGES CUDA CXX)
 
 find_package(MPI REQUIRED)
 
-set(CUDA_ARCH "30")
+set(CUDA_ARCH "61")
                 #if you have different cuda-capable hardware, modify this line to get much more optimized performance. By default,
                 #I have set this to work on Tesla K40s (still used at many XSEDE facilities), but add the correct codes for optimizing performance
                 #on your cards
@@ -112,7 +112,7 @@ set(HEADERS
 
 # list the names of cpp files corresponding to linked executables you'd like... This first set is
 # for cpp files which DO NOT need QT
-foreach(ARG openQmin customScriptFromGUI)
+foreach(ARG openQmin customScriptFromGUI hedgehogTesting)
 add_executable("${ARG}.out" "${ARG}.cpp" )
 target_link_libraries("${ARG}.out" ${myLibs} ${MPI_LIBRARIES} -lnvToolsExt)
 if(MPI_COMPILE_FLAGS)
