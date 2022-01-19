@@ -286,13 +286,7 @@ int main(int argc, char*argv[])
     right.x = 1.*boxLx;right.y = 0.5*boxLy;right.z = 0.5*boxLz;
     //use program switches to define what objects are in the simulation
     scalar newRadius = floor(radiusFactor*boxLx);
-
-    bool colloidOrCapillary = false;
-    sim->createCylindricalObject(left,right,newRadius,colloidOrCapillary,homeotropicBoundary);
-    // sim->createSphericalCavity(center,newRadius,homeotropicBoundary);
-    // sim->createWall(2,25,homeotropicBoundary);
-    // sim->createWall(2,50,homeotropicBoundary);
-
+    sim->createSphericalColloid(center,newRadius,homeotropicBoundary);
     direction.x=0;direction.y=0;direction.z=1.;
     if(programSwitch ==0)
         {
@@ -351,7 +345,7 @@ int main(int argc, char*argv[])
 
     sim->finalizeObjects();
     char filename[256];
-    sprintf(filename,"../data/cylHomeoTesting_z%i_L%i_g%i_b%.3g_r%i.txt",programSwitch,boxLx,gpu,phaseB,(int)newRadius);
+    sprintf(filename,"../data/hedgehogTesting_z%i_L%i_g%i_b%.3g_r%i.txt",programSwitch,boxLx,gpu,phaseB,(int)newRadius);
     ofstream myfile;
     myfile.open(filename);
     myfile.setf(ios_base::scientific);
@@ -424,7 +418,7 @@ int main(int argc, char*argv[])
     if(programSwitch ==0)
         {
         char savename[256];
-        sprintf(savename,"../data/chConfiguration_L%i_b%.3g_r%i",boxLx,phaseB,(int)newRadius);
+        sprintf(savename,"../data/hhConfiguration_L%i_b%.3g_r%i",boxLx,phaseB,(int)newRadius);
         sim->p1.print();
         sim->saveState(savename);
         }
