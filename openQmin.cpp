@@ -165,6 +165,9 @@ int main(int argc, char*argv[])
     if(myRank ==0 && worldSize > 1)
             printf("lattice divisions: {%i, %i, %i}\n",rankTopology.x,rankTopology.y,rankTopology.z);
 
+    //scalar calctest = cos(PI/2*sqrt(pow(2,2)));
+    //printf("calc test: %f", calctest);
+
     scalar a = -1;
     scalar b = -phaseB/phaseA;
     scalar c = phaseC/phaseA;
@@ -300,6 +303,14 @@ int main(int argc, char*argv[])
             Fminimizer->setMaximumIterations(currentIteration);
             sim->performTimestep();
             if(verbose) printf("saving to %s (plus _xX_yY_zZ.txt)\n",newSaveFile.c_str());
+
+            //240905 modified, jhlee
+            scalar E1 = sim->computePotentialEnergy(true);
+            scalar maxForce;
+            maxForce = Fminimizer->getMaxForce();
+
+            printf("F= %g\t E=%f\t\n",maxForce,E1);
+            //
             };
         }
     else                                //save logarithmically
@@ -319,6 +330,14 @@ int main(int argc, char*argv[])
             Fminimizer->setMaximumIterations(currentIteration);
             sim->performTimestep();
             if(verbose) printf("saving to %s (plus _xX_yY_zZ.txt)\n",newSaveFile.c_str());
+
+            //240805 modified, jhlee
+            scalar E1 = sim->computePotentialEnergy(true);
+            scalar maxForce;
+            maxForce = Fminimizer->getMaxForce();
+
+            printf("F= %g\t E=%f\t\n",maxForce,E1);
+            //
             };
         }
 

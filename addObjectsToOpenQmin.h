@@ -20,66 +20,81 @@ sim->createBoundaryFromFile(boundaryFileToLoad,true);
 */
     
    
-/*
+
 //To use some of the built-in colloid and boundary functions, we first need to specify types of
 //anchoring conditions (which are called "boundaryObjects" in the class structure):
 
 scalar targetNematicValue = S0;
 scalar anchoringStrength1 = 5.0;
-scalar anchoringStrength2 = 1.0;
+//scalar anchoringStrength2 = 1.0;
+scalar anchoringStrength2 = 0.68;
+//scalar anchoringStrength2 = 0.23;
+//scalar anchoringStrength3 = 1.0e-8; //0.0001;
+//scalar anchoringStrength4 = 2.3e-4;
+//scalar anchoringStrength4 = 6.8e-5;
+
 boundaryObject homeotropicBoundary1(boundaryType::homeotropic,anchoringStrength1,targetNematicValue);
-boundaryObject homeotropicBoundary2(boundaryType::homeotropic,anchoringStrength1,targetNematicValue*0.8);
+//boundaryObject homeotropicBoundary2(boundaryType::homeotropic,anchoringStrength1,targetNematicValue*0.8);
 boundaryObject pdgBoundary(boundaryType::degeneratePlanar,anchoringStrength2,targetNematicValue);
 
 //We'll see below that these anchoring conditions can be shared by multiple objects, so you only need to to
 //define as many different conditions as exist in the simulation (as opposed to defining a different condition
 //for every distinct object)
-*/
+
     
 
-/*
+
 //Assuming the anchoring conditions above have been set, let's set four spheres in a line, with positions
 //and (equal) sizes given relative to the simulation size:
 
-scalar3 pos1, pos2, pos3, pos4;
-scalar radius = boxLx*0.05;
-pos1.x = 0.2*boxLx; pos1.y = 0.5*boxLy; pos1.z = 0.5*boxLz;
-pos2.x = 0.4*boxLx; pos2.y = 0.5*boxLy; pos2.z = 0.5*boxLz;
-pos3.x = 0.6*boxLx; pos3.y = 0.5*boxLy; pos3.z = 0.5*boxLz;
-pos4.x = 0.8*boxLx; pos4.y = 0.5*boxLy; pos4.z = 0.5*boxLz;
+scalar3 pos1;
+//scalar3 pos2, pos3, pos4;
+//scalar radius = boxLz*0.25;
+//scalar radius = boxLz*0.1;
+pos1.x = 0.5*boxLx; pos1.y = 0.5*boxLy; pos1.z = 0.5*boxLz;
+//pos2.x = 0.4*boxLx; pos2.y = 0.5*boxLy; pos2.z = 0.5*boxLz;
+//pos3.x = 0.6*boxLx; pos3.y = 0.5*boxLy; pos3.z = 0.5*boxLz;
+//pos4.x = 0.*boxLx; pos4.y = 0.5*boxLy; pos4.z = 0.5*boxLz;
 
-sim->createSphericalColloid(pos1,radius,homeotropicBoundary1);
-sim->createSphericalColloid(pos2,radius,homeotropicBoundary1);
-sim->createSphericalColloid(pos3,radius,pdgBoundary);
-sim->createSphericalColloid(pos4,radius,homeotropicBoundary2);
-*/
+//sim->createSphericalColloid(pos1,radius,homeotropicBoundary1);
+//sim->createSphericalColloid(pos2,radius,homeotropicBoundary1);
+//sim->createSphericalColloid(pos3,radius,pdgBoundary);
+//sim->createSphericalColloid(pos4,radius,homeotropicBoundary2);
 
-/*
-\\To create a wall whose normal is in the x, y, or z-direction, use the following:
 
-int xyz = 0; \\0 --> wall has normal along \hat{x}, 1 --> wall has normal along \hat{y}, and 2 --> wall has normal along \hat{z}
-int latticePlane = 0; \\Pick any integer in between 0 and the maximum number of lattice sites in the direction desired (e.g., (boxLx-1)), inclusive.
 
-sim->createWall(xyz,latticePlane,homeotropicBoundary2);
-*/
+//To create a wall whose normal is in the x, y, or z-direction, use the following:
+
+int xyz = 2; //0 --> wall has normal along \hat{x}, 1 --> wall has normal along \hat{y}, and 2 --> wall has normal along \hat{z}
+int latticePlane = 0; //Pick any integer in between 0 and the maximum number of lattice sites in the direction desired (e.g., (boxLx-1)), inclusive.
+
+//sim->createWall(xyz,latticePlane,pdgBoundary);
+//sim->createWall(xyz,1*boxLz-1,pdgBoundary);
 
 /*
 \\cylinders and cylinders with a spherical cap require a start and end point to the cylindrical segment:
+*/
 scalar3 pathStart, pathEnd;
 scalar radius;
-pathStart.x = 0.25*boxLx; pathStart.y=0.25*boxLy; pathStart = 0.25*boxLz;
-pathEnd.x = 0.75*boxLx; pathEnd.y=0.75*boxLy; pathEnd = 0.75*boxLz;
-radius = 10.0; \\specified in units of lattice spacing, rather than relative to the simulation... for variety.
+//pathStart.x = 0.25*boxLx; pathStart.y=0.25*boxLy; pathStart = 0.25*boxL;
+pathStart.x= 0.5*boxLx; pathStart.y=0.5*boxLy; pathStart.z=0*boxLz;
+//pathEnd.x = 0.75*boxLx; pathEnd.y=0.75*boxLy; pathEnd = 0.75*boxLz;
+pathEnd.x=0.5*boxLx; pathEnd.y=0.5*boxLy; pathEnd.z=1*boxLz;
+//radius = round(0.1*boxLx); //specified in units of lattice spacing, rather than relative to the simulation... for variety.
+radius= 0.4*boxLx;
 
-\\sim->createSpherocylinder(pathStart,pathEnd,radius,homeotropicBoundary1);
+//sim->createSpherocylinder(pathStart,pathEnd,radius,homeotropicBoundary1);
 
-bool colloidOrCapillary = true;
-\\sim->createCylindricalObject(pathStart,pathEnd,radius,colloidOrCapillary,homeotropicBoundary1);
-\\Note that the "createCylindricalObject" function can be used to either make a colloidal object OR form a capillary (i.e. the "object" can either be inside a cylinder specified by a start, end, and radius, or it can be all the points outside that cylinder). For making a capillary, we recommend aligning the axis with the z-axis, and making the start and end the minimum and maximum size of the simulation box in that dimension.
+//false -> capillary, true -> colloid
+bool colloidOrCapillary = false;
+sim->createCylindricalObject(pathStart,pathEnd,radius,colloidOrCapillary,pdgBoundary);
+/*
+//Note that the "createCylindricalObject" function can be used to either make a colloidal object OR form a capillary (i.e. the "object" can either be inside a cylinder specified by a start, end, and radius, or it can be all the points outside that cylinder). For making a capillary, we recommend aligning the axis with the z-axis, and making the start and end the minimum and maximum size of the simulation box in that dimension.
 */
 
+
 /*
-\\Finally, for... reasons, the command to create a spherical cavity requires a separate function (unlike the switch in the capillary command above):
+//Finally, for... reasons, the command to create a spherical cavity requires a separate function (unlike the switch in the capillary command above):
 scalar3 center;
 center.x = boxLx*0.5; center.y = boxLy*0.5; center.z = boxLz*0.5;
 scalar radius = floor(boxLx*0.5) - 2;

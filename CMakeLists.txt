@@ -3,7 +3,7 @@ project(openQmin LANGUAGES CUDA CXX)
 
 find_package(MPI REQUIRED)
 
-set(CUDA_ARCH "30")
+set(CUDA_ARCH "86")
                 #if you have different cuda-capable hardware, modify this line to get much more optimized performance. By default,
                 #I have set this to work on Tesla K40s (still used at many XSEDE facilities), but add the correct codes for optimizing performance
                 #on your cards
@@ -11,7 +11,7 @@ set(CUDA_ARCH "30")
 add_definitions(-DDIMENSION=5)
 add_definitions(-DDIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}")
 message("dir = " "${CMAKE_CURRENT_SOURCE_DIR}")
-
+message("${MPI_INCLUDE_PATH}")
 # Tell CMake to run moc when necessary:
 set(CMAKE_AUTOMOC ON)
 # As moc files are generated in the binary dir, tell CMake to always look for includes there:
@@ -112,7 +112,7 @@ set(HEADERS
 
 # list the names of cpp files corresponding to linked executables you'd like... This first set is
 # for cpp files which DO NOT need QT
-foreach(ARG openQmin customScriptFromGUI)
+foreach(ARG openQmin customScriptFromGUI hedgehogTesting speedScaling)
 add_executable("${ARG}.out" "${ARG}.cpp" )
 target_link_libraries("${ARG}.out" ${myLibs} ${MPI_LIBRARIES} -lnvToolsExt)
 if(MPI_COMPILE_FLAGS)
@@ -124,8 +124,8 @@ endif()
 endforeach()
 
 # list the names of cpp files corresponding to linked executables you'd like... This second set is
-# for GUI-related cpp files
-foreach(ARG openQminGUI)
+# for GUI-related cpp files,  i.e. openQminGUI
+foreach(ARG)
 add_executable("${ARG}.out" "${ARG}.cpp" ${SOURCES} ${HEADERS} ${UI_HEADERS})
 target_link_libraries("${ARG}.out" ${myLibs} ${OPENGL_LIBRARIES}
     ${MPI_LIBRARIES}

@@ -61,8 +61,10 @@ if(initializationSwitch ==2)
     scalar s0 = S0;
     scalar3 targetDirector;
     targetDirector.x = 1./2;
+    //targetDirector.x = 0;
     targetDirector.y = 0;
-    targetDirector.z = 1/2.;
+    //targetDirector.z = 1/2.;
+    targetDirector.z = 0;
     normalizeDirector(targetDirector);
 
     Configuration->setUniformDirectors(targetDirector,s0);
@@ -74,6 +76,9 @@ Note openQmin's convention that the simulation domain starts at zero and goes up
 
 if(initializationSwitch == 3)
     {
+    static int centerpos = boxLx/2;
+    //static scalar centerpos = 50;
+
     //we'll use c++11's lambda expressions to let us locally define a function that we'll pass to the multirankQtensorLatticeModel's function
     std::function<scalar4(scalar, scalar, scalar)> localDirectors=[](scalar x, scalar y, scalar z)
         {
@@ -81,16 +86,73 @@ if(initializationSwitch == 3)
         scalar3 director;
 
         //write your function for the initial director here:
-        director.x = x;
-        director.y = x+y+ cos(z);
-        director.z = 0;
+        //director.x = x;
+	//director.y = x+y+ cos(z);
+        //director.z = 0;
+	
+	//director.x = -y*sin(PI/2*sqrt(pow(x-50,2)+pow(y-50,2)))/sqrt(pow(x-50,2)+pow(y-50,2));
+	//director.y = x*sin(PI/2*sqrt(pow(x-50,2)+pow(y-50,2)))/sqrt(pow(x-50,2)+pow(y-50,2));
+	//director.z = cos(PI/2*sqrt(pow(x-50,2)+pow(y-50,2)));
+
+	director.x = -(y-centerpos);
+	director.y = x-centerpos;
+	director.z = 0;
+        //director.x = 0;
+	//director.y = 0;
+	//director.z = 1;
+	//director.z = sqrt(pow(x-50,2)+pow(y-50,2))/50;
+
         //write your function for the initial s0 value here:
         scalar s0 = 0.53+0.0000000001*(x+y+z);
 
         normalizeDirector(director);
-        result.x = director.x;
-        result.y = director.y;
-        result.z = director.z;
+        //result.x = director.x;
+        //result.y = director.y;
+        //result.z = director.z;
+        result.x = sin(68*PI/180*sqrt(pow(x-centerpos,2)+pow(y-centerpos,2))/centerpos/0.8)*director.x;
+        result.y = sin(68*PI/180*sqrt(pow(x-centerpos,2)+pow(y-centerpos,2))/centerpos/0.8)*director.y;
+        result.z = cos(68*PI/180*sqrt(pow(x-centerpos,2)+pow(y-centerpos,2))/centerpos/0.8);
+        //result.x = sin(68*PI/180*sqrt(pow(x-1.2*centerpos,2)+pow(y-centerpos,2))/centerpos/0.8)*director.x;
+        //result.y = sin(68*PI/180*sqrt(pow(x-1.2*centerpos,2)+pow(y-centerpos,2))/centerpos/0.8)*director.y;
+        //result.z = cos(68*PI/180*sqrt(pow(x-1.2*centerpos,2)+pow(y-centerpos,2))/centerpos/0.8);
+        //result.x = sin(atan(0.3399*sqrt(pow(x-50,2)+pow(y-50,2))/50/(1-0.8667*pow(sqrt(pow(x-50,2)+pow(y-50,2))/50,2))))*director.x;
+        //result.y = sin(atan(0.3399*sqrt(pow(x-50,2)+pow(y-50,2))/50/(1-0.8667*pow(sqrt(pow(x-50,2)+pow(y-50,2))/50,2))))*director.y;
+        //result.z = cos(atan(0.3399*sqrt(pow(x-50,2)+pow(y-50,2))/50/(1-0.8667*pow(sqrt(pow(x-50,2)+pow(y-50,2))/50,2))));
+        //result.x = sin(atan(0.3399*sqrt(pow(x-50,2)+pow(y-50,2))/50/0.7/(1-0.8667*pow(sqrt(pow(x-50,2)+pow(y-50,2))/50/0.8,2))))*director.x;
+        //result.y = sin(atan(0.3399*sqrt(pow(x-50,2)+pow(y-50,2))/50/0.7/(1-0.8667*pow(sqrt(pow(x-50,2)+pow(y-50,2))/50/0.8,2))))*director.y;
+        //result.z = cos(atan(0.3399*sqrt(pow(x-50,2)+pow(y-50,2))/50/0.7/(1-0.8667*pow(sqrt(pow(x-50,2)+pow(y-50,2))/50/0.8,2))));
+        result.w = s0;
+        return result;
+        };
+    if(verbose) printf("using custom function to define initial conditions\n");
+    Configuration->setDirectorFromFunction(localDirectors);
+    }
+
+if(initializationSwitch == 4)
+    {
+    static int centerpos = boxLx/2;
+    //static scalar centerpos = 500;
+
+    //we'll use c++11's lambda expressions to let us locally define a function that we'll pass to the multirankQtensorLatticeModel's function
+    std::function<scalar4(scalar, scalar, scalar)> localDirectors=[](scalar x, scalar y, scalar z)
+        {
+        scalar4 result;
+        scalar3 director;
+
+
+	director.x = -(y-centerpos);
+	director.y = x-centerpos;
+	director.z = 0;
+
+        //write your function for the initial s0 value here:
+        scalar s0 = 0.53+0.0000000001*(x+y+z);
+
+	scalar zpitch = 2*2*PI/500;
+
+        normalizeDirector(director);
+        result.x = sin(68*PI/180*sqrt(pow(x-(1+0.2*sin(zpitch*z))*centerpos,2)+pow(y-(1+0.2*cos(zpitch*z))*centerpos,2))/centerpos/0.8)*director.x;
+        result.y = sin(68*PI/180*sqrt(pow(x-(1+0.2*sin(zpitch*z))*centerpos,2)+pow(y-(1+0.2*cos(zpitch*z))*centerpos,2))/centerpos/0.8)*director.y;
+        result.z = cos(68*PI/180*sqrt(pow(x-(1+0.2*sin(zpitch*z))*centerpos,2)+pow(y-(1+0.2*cos(zpitch*z))*centerpos,2))/centerpos/0.8);
         result.w = s0;
         return result;
         };

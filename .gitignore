@@ -21,3 +21,5 @@ mpi2/*
 debug/*
 data/*
 doc/doxygenOutput
+assets/*
+data/*
